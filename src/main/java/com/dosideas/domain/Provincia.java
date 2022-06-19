@@ -4,8 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-//entity indica que esta clase está asociada a la tabla en la base de datos
 
+//entity indica que esta clase está asociada a la tabla en la base de datos (entidad a guardar)
 @Entity
 public class Provincia {
     
