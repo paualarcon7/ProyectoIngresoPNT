@@ -2,11 +2,8 @@ package com.dosideas.service;
 
 import com.dosideas.ApplicationConfig;
 import com.dosideas.domain.Provincia;
-import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.Matchers.contains;
-import org.hamcrest.collection.IsEmptyCollection;
+import static org.assertj.core.api.Assertions.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,55 +30,57 @@ public class ProvinciaServiceTest {
 
     @Test
     public void buscarPorId_conIdInexistente_retornaNull() {
-        Long id = 21L;
+        Long id = 22L;
 
         Provincia provincia = provinciaService.buscarPorId(id);
         assertThat(provincia).isNull();
-    }
+    } 
 
     @Test(expected = IllegalArgumentException.class)
     public void buscarPorId_conIdNull_lanzaExcepcion() {
-        try {
-            Provincia provincia = provinciaService.buscarPorId(null);
-        } catch (Exception err) {
-            throw new IllegalArgumentException("id nulo");
-        }
+        provinciaService.buscarPorId(null);
     }
 
     @Test
     public void buscarPorNombre_conStringExacto_retornaProvincia() {
-        String nombre = "";
-        List<Provincia> provincia = provinciaService.buscarPorNombre(nombre);
+        Provincia provincia = provinciaService.buscarPorNombreExacto("Jujuy");
         assertThat(provincia).isNotNull();
     }
-    
-    @Test (expected = IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void buscarPorNombre_conStringNull_lanzaExcepcion() {
-        try {
-            provinciaService.buscarPorNombreExacto(null);
-        } catch (Exception err) {
-            throw new IllegalArgumentException("nombre nulo");
-        }
+        provinciaService.buscarPorNombreInvalido(null);
     }
-    
 
     @Test(expected = IllegalArgumentException.class)
     public void buscarPorNombre_conStringInvalido_lanzaExcepcion() {
-        try {
-            provinciaService.buscarPorNombreExacto("abcde");
-        } catch (Exception err) {
-            throw new IllegalArgumentException("nombre inválido");
-        }
+        provinciaService.buscarPorNombreInvalido("ab");
     }
-    
-   /* @Test
-    public void buscarPorNombre_ignorandoMayusMinus_retornaProvincia(){
-      //  String nombre = "";
-      
-        List<Provincia> provincias = provinciaService.buscarIgnorandoMayusculas("bueNos aIrEs");
-       // System.out.println(provincias.size());
-        assertThat(provincias.c));//.isNotEmpty();
-       // assertThat(provincia.size()).is(); //.isNotNull();
-       // assertThat(provincia).contains();
-    }*/
+
+    @Test
+    public void buscarPorNombre_ignorandoMayusMinus_retornaProvincia() {
+        Iterable<Provincia> provincias = provinciaService.buscarIgnorandoMayusculas("jU");
+        assertThat(provincias).isNotNull();
+    }
+
+    @Test
+    public void recibeProvincia_porParametro_guardaProvincia() {
+        Provincia provincia = new Provincia();
+        provincia.setNombre("Tierra del Fuego");
+        Provincia provincias = provinciaService.guardar(provincia);
+        assertThat(provincias).isNotNull();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void recibeProvincia_conValorNull_lanzaExcepcion() {
+        provinciaService.guardar(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void recibeProvincia_conNombreInvalido_lanzaExcepcion() {
+        Provincia provincia = new Provincia();
+        provincia.setNombre("Ti");
+        provinciaService.guardar(provincia);
+
+    }
 }

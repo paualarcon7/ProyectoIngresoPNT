@@ -10,42 +10,52 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class ProvinciaService {
-    
+
     @Autowired //el service tiene una dependencia con el repository
     private final ProvinciaRepository provinciaRepository;
-    
-    
+
     public ProvinciaService(ProvinciaRepository provinciaRepository) {
         this.provinciaRepository = provinciaRepository;
     }
-    
-    
-    public Provincia buscarPorId(Long id){
-        
+
+    public Provincia buscarPorId(Long id) {
+
+        if (id == null) {
+            throw new IllegalArgumentException("Valor inválido");
+        }
         Provincia provincia = provinciaRepository.findById(id).orElse(null);
-        System.out.println(provincia.getNombre());
         return provincia;
     }
-    
-    public List<Provincia> buscarTodos() {
+
+    /* public List<Provincia> buscarTodos() {
         return provinciaRepository.findAll();
+    }*/
+    public Provincia buscarPorNombreExacto(String nombre) {
+        return provinciaRepository.findByNombreLike(nombre);
     }
-    
-    public List<Provincia> buscarPorNombre(String nombre){
+
+    public List<Provincia> buscarPorNombreInvalido(String nombre) {
+        if (nombre == null) {
+            throw new IllegalArgumentException("Valor inválido");
+        }
+        if (nombre.length() < 3) {
+            throw new IllegalArgumentException("Valor inválido");
+        }
         return provinciaRepository.findByNombre(nombre);
     }
-    
-    public Provincia buscarPorNombreExacto(String nombre){
-      //  System.out.println(nombre);
-        if(nombre == null) throw new IllegalArgumentException("nombre nulo");
-        if(nombre.length() < 3) throw new IllegalArgumentException("nombre inválido");
-        List<Provincia> provincia =  provinciaRepository.findByNombre(nombre);
-        System.out.println(provincia.get(0).getNombre());
-        return (Provincia) provincia.get(0);
-      //  throw new IllegalArgumentException("nombre nulo");
+
+    public Iterable<Provincia> buscarIgnorandoMayusculas(String nombre) {
+        return provinciaRepository.findByNombreContainingIgnoreCase(nombre);
     }
-    
-    public List<Provincia> buscarIgnorandoMayusculas(String nombre){
-        return provinciaRepository.findByNombreIgnoreCase(nombre);
+
+    public Provincia guardar(Provincia provincia) {
+        if (provincia == null) {
+            throw new IllegalArgumentException("Valor inválido");
+        }
+        if (provincia.getNombre().length() < 3) {
+            throw new IllegalArgumentException("Valor inválido");
+        }
+
+        return provinciaRepository.save(provincia);
     }
 }
