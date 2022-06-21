@@ -3,7 +3,6 @@ package com.dosideas.service;
 import com.dosideas.ApplicationConfig;
 import com.dosideas.domain.Provincia;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +48,12 @@ public class ProvinciaServiceTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void buscarPorNombre_conStringNull_lanzaExcepcion() {
-        provinciaService.buscarPorNombreInvalido(null);
+        provinciaService.buscarPorNombreExacto(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void buscarPorNombre_conStringInvalido_lanzaExcepcion() {
-        provinciaService.buscarPorNombreInvalido("ab");
+        provinciaService.buscarPorNombreExacto("ab");
     }
 
     @Test
@@ -67,6 +66,7 @@ public class ProvinciaServiceTest {
     public void recibeProvincia_porParametro_guardaProvincia() {
         Provincia provincia = new Provincia();
         provincia.setNombre("Tierra del Fuego");
+        provincia.setIdPais(1L);
         Provincia provincias = provinciaService.guardar(provincia);
         assertThat(provincias).isNotNull();
     }

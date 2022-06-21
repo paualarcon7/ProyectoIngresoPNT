@@ -27,24 +27,24 @@ public class ProvinciaService {
         return provincia;
     }
 
-    /* public List<Provincia> buscarTodos() {
+    public List<Provincia> buscarTodos() {
         return provinciaRepository.findAll();
-    }*/
-    public Provincia buscarPorNombreExacto(String nombre) {
-        return provinciaRepository.findByNombreLike(nombre);
     }
 
-    public List<Provincia> buscarPorNombreInvalido(String nombre) {
+    public Provincia buscarPorNombreExacto(String nombre) {
         if (nombre == null) {
             throw new IllegalArgumentException("Valor inválido");
         }
         if (nombre.length() < 3) {
             throw new IllegalArgumentException("Valor inválido");
         }
-        return provinciaRepository.findByNombre(nombre);
+        return provinciaRepository.findByNombreLike(nombre);
     }
 
     public Iterable<Provincia> buscarIgnorandoMayusculas(String nombre) {
+        if (nombre == null) {
+            throw new IllegalArgumentException("Valor inválido");
+        }
         return provinciaRepository.findByNombreContainingIgnoreCase(nombre);
     }
 
